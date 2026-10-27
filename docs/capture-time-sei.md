@@ -2,7 +2,8 @@
 
 **Owned by this repository**, not vendored from the server: the OBS plugin writes
 it and the compositor worker reads it. Ingest (MediaMTX) only passes it through;
-the server never parses it. Code: `plugins/synqframe/core/{include/synqframe,src}/capture-time-sei.*`.
+the server never parses it. Code: `include/synqframe/capture-time-sei.hpp` and
+`src/capture-time-sei.cpp`.
 
 ## Purpose
 
