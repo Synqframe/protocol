@@ -5,13 +5,15 @@ project(synqframe-protocol VERSION 0.1.0 LANGUAGES CXX)
 # speak. MIT licensed (LICENSE), so the GPL plugin and the workers can each build it in.
 #
 # - synqframe-protocol: the capture-time SEI writer/reader (docs/capture-time-sei.md), the
-#   SNTP sample math, and Twitch's BPM SEI (bpm.hpp). No dependencies.
+#   SNTP sample math, Twitch's BPM SEI (bpm.hpp), SHA-256 and the text source's drawing
+#   (text-raster.hpp, with stb_truetype built in). No dependencies.
 # - synqframe-protocol-net: blocking HTTP calls and the reconnecting WebSocket client, on libcurl.
-# - Header-only: slot-mask.hpp (no dependencies) and packed-alpha.hpp (an OBS filter: the
-#   includer links libobs).
+# - Header-only: slot-mask.hpp (no dependencies), packed-alpha.hpp (an OBS filter) and
+#   text-source.hpp (an OBS source): the includer links libobs.
 
-add_library(synqframe-protocol STATIC src/bpm.cpp src/capture-time-sei.cpp src/ntp-sample.cpp)
+add_library(synqframe-protocol STATIC src/bpm.cpp src/capture-time-sei.cpp src/ntp-sample.cpp src/sha256.cpp src/text-raster.cpp)
 target_include_directories(synqframe-protocol PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_include_directories(synqframe-protocol PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/third_party")
 target_compile_features(synqframe-protocol PUBLIC cxx_std_20)
 set_target_properties(synqframe-protocol PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
@@ -37,3 +39,7 @@ target_link_libraries(ntp-sample-test PRIVATE synqframe-protocol)
 # BPM SEI insertion checks.
 add_executable(bpm-test tests/bpm-test.cpp)
 target_link_libraries(bpm-test PRIVATE synqframe-protocol)
+
+# Text source layout and drawing checks, and SHA-256; run with tests/fonts/manrope-700.ttf.
+add_executable(text-raster-test tests/text-raster-test.cpp)
+target_link_libraries(text-raster-test PRIVATE synqframe-protocol)
